@@ -22,6 +22,7 @@ import com.codetoanbug.myapplication.feature_note.presentation.util.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 
+
 @ExperimentalAnimationApi
 @Composable
 fun NotesScreen(

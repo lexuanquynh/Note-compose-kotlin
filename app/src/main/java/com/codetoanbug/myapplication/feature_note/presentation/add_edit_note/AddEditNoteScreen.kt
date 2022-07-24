@@ -43,16 +43,15 @@ fun AddEditNoteScreen(
             Color(if (noteColor != -1) noteColor else viewModel.noteColor.value)
         )
     }
-    
     val scope = rememberCoroutineScope()
+
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
-            when (event) {
+            when(event) {
                 is AddEditNoteViewModel.UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
-                        event.message
+                        message = event.message
                     )
-
                 }
                 is AddEditNoteViewModel.UiEvent.SaveNote -> {
                     navController.navigateUp()
@@ -63,15 +62,16 @@ fun AddEditNoteScreen(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                viewModel.onEvent(AddEditNoteEvent.SaveNote)
-            },
+            FloatingActionButton(
+                onClick = {
+                    viewModel.onEvent(AddEditNoteEvent.SaveNote)
+                },
                 backgroundColor = MaterialTheme.colors.primary
             ) {
-                Icon(imageVector = Icons.Filled.Save, contentDescription = "Save note")
+                Icon(imageVector = Icons.Default.Save, contentDescription = "Save note")
             }
         },
-        scaffoldState = scaffoldState,
+        scaffoldState = scaffoldState
     ) {
         Column(
             modifier = Modifier
