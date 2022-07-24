@@ -4,10 +4,12 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,63 +18,62 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.codetoanbug.myapplication.feature_note.presentation.add_edit_note.AddEditNoteScreen
+import com.codetoanbug.myapplication.feature_note.presentation.notes.NotesScreen
+import com.codetoanbug.myapplication.feature_note.presentation.util.Screen
 import com.codetoanbug.myapplication.ui.theme.MyApplicationTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MyApplicationTheme {
-                DemoApp()
+               Surface(
+                    color = MaterialTheme.colors.background
+               ) {
+                   val navController = rememberNavController()
+                   NavHost(
+                       navController = navController,
+                       startDestination = Screen.NoteScreen.router
+                   ) {
+                       composable(Screen.NoteScreen.router) {
+                           NotesScreen(navController = navController)
+                       }
+                       composable(
+                           route = Screen.NoteScreen.router +
+                           "?noteId={noteId}&noteColor={noteColor}",
+                           arguments = listOf(
+                               navArgument(
+                                   name = "noteId",
+                               ) {
+                                   type = NavType.IntType
+                                   defaultValue = -1
+                               },
+                               navArgument(
+                                   name = "noteColor",
+                               ) {
+                                   type = NavType.IntType
+                                   defaultValue = -1
+                               }
+                           )
+                       ) {
+                           val color = it.arguments?.getInt("noteColor") ?: -1
+                           AddEditNoteScreen(
+                               navController = navController,
+                               noteColor = color)
+
+                       }
+                   }
+               }
             }
         }
     }
-}
-@Preview(name = "Light Mode")
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    name = "Dark Mode"
-)
-@Composable
-fun DemoApp() {
-    DiceWithButtonAndImage(modifier = Modifier
-        .fillMaxSize()
-        .wrapContentSize(Alignment.Center))
-}
-
-@Composable
-fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
-    var result by remember {
-        mutableStateOf(1)
-    }
-    val imageResource = when(result) {
-        1 -> R.drawable.dice_1
-        2 -> R.drawable.dice_2
-        3 -> R.drawable.dice_3
-        4 -> R.drawable.dice_4
-        5 -> R.drawable.dice_5
-        6 -> R.drawable.dice_6
-        else -> R.drawable.dice_6
-    }
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-            PreviewMessageCard(message = MessageCard("Dice hello", "Roll the dice"))
-        Image(painter = painterResource(imageResource),
-            contentDescription = result.toString())
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { result = (1..6).random() }) {
-            Text(text = stringResource(R.string.roll))
-        }
-    }
-}
-
-data class MessageCard(val name: String, val message: String)
-
-@Composable
-fun PreviewMessageCard(message: MessageCard) {
-    Text(text = message.message,
-        color = MaterialTheme.colors.secondaryVariant)
-
-    Text(text = message.name,
-        color = MaterialTheme.colors.secondaryVariant)
 }

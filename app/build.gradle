@@ -1,8 +1,11 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
+//    id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+//    kotlin("kapt") version "1.7.10"
+    id 'kotlin-kapt'
+//    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -75,10 +78,13 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1"
 
     // Dagger-hilt dependencies
-    implementation "com.google.dagger:hilt-android:2.38.1"
-    kapt "com.google.dagger:hilt-android-compiler:2.38.1"
+//    implementation "com.google.dagger:hilt-android:2.43"
+//    kapt "com.google.dagger:hilt-android-compiler:2.43"
+    implementation("com.google.dagger:hilt-android:2.38.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
+
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    kapt "androidx.hilt:hilt-compiler:1.0.0-alpha03"
+    kapt "androidx.hilt:hilt-compiler:1.0.0"
 
     // Room dependencies
     implementation "androidx.room:room-compiler:2.2.5"
@@ -86,4 +92,9 @@ dependencies {
     implementation "androidx.room:room-ktx:2.4.2"
 
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }
