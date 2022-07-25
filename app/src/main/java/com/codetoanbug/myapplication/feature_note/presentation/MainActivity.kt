@@ -1,4 +1,4 @@
-package com.codetoanbug.myapplication
+package com.codetoanbug.myapplication.feature_note.presentation
 
 import android.content.res.Configuration
 import android.os.Bundle
